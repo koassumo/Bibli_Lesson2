@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Bibli_Lesson2</string>
+    <string name="hint">Enter text</string>
+    <string name="empty">...</string>
+</resources>
