@@ -3,6 +3,8 @@ package ru.geekbrains.android2.bibli_lesson2;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -31,14 +33,31 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        myTextView = findViewById(R.id.myTextView);
-        myEditText = findViewById(R.id.myEditText);
-
+        initViews();
         initObservable();
         initObserver();
-        setOnNewSymbol();
 
         mSubscription = observable.subscribe(observer);
+    }
+
+    private void initViews() {
+        myTextView = findViewById(R.id.myTextView);
+        myEditText = findViewById(R.id.myEditText);
+        myEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                    textFromEditView = myEditText.getText().toString();
+                    mSubscription = observable.subscribe(observer);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+            }
+        });
     }
 
     private void initObservable() {
@@ -63,17 +82,6 @@ public class MainActivity extends AppCompatActivity {
                 Log.v(LOG_TAG, "onNext = " + s);
             }
         };
-    }
-
-    private void setOnNewSymbol() {
-        myEditText.setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                textFromEditView = myEditText.getText().toString();
-                mSubscription = observable.subscribe(observer);
-                return false;
-            }
-        });
     }
 
     private void printNextSymbol(String s) {
